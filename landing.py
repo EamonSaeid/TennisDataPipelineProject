@@ -1,0 +1,60 @@
+import requests
+import logging
+import uuid
+import json
+from datetime import datetime
+from google.cloud import storage
+
+# Logging initialize
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+logger=logging.getLogger(__name__)
+
+# Bucket initialise
+client=storage.Client()
+bucket=client.bucket('tennisdataengproject-landing')
+
+
+
+
+# Get modified time and urls for all the different files
+r=requests.get('https://stats.tennismylife.org/api/data-files', timeout=10)
+latest_2026_file_from_source=next(i for i in r.json()['files'] if "2026" in i['name'])
+last_modified=latest_2026_file_from_source['mtime']
+csv_url=latest_2026_file_from_source['url']
+
+# Variables needed in ingestion
+ingest_datetime=datetime.now()
+ingest_date=ingest_datetime.strftime("%Y-%m-%d")
+batch_id=str(uuid.uuid4())
+
+
+data_path=f"raw/tml/matches/ingest_date={ingest_date}/batch_id={batch_id}/2026.csv"
+
+# Downloading the CSV
+response=requests.get(csv_url, timeout=30)
+response.raise_for_status()
+csv_bytes=response.content
+
+# row_count
+csv_row_count=len(csv_bytes.decode("utf_8").splitlines())-1
+
+
+# constants
+source_name='tml'
+entity='matches'
+
+
+manifest_dict={
+    "source": source_name,
+    "entity": entity,
+    "extraction_window":2026,
+    "row_count":csv_row_count
+}
+
+# Uploading the csv onto the GCP bucket
+manifest_path=f"raw/tml/matches/ingest_date={ingest_date}/batch_id={batch_id}/_manifest.json"
+manifest_blob=bucket.blob(manifest_path)
+manifest_blob.upload_from_string(json.dumps(manifest_dict, indent=2), content_type='application/json')

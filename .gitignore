@@ -1,0 +1,18 @@
+# Kets 
+.env
+
+# Pyton code, which pythone generates every time its run. Also the whole virtual envinronment which can be recreated from the requirements.txt
+*.py[cod]
+.venv/
+*.egg-info/
+__pycache__/
+
+.terraform/
+# tfstate contains IDs
+*.tfstate
+*.tfstate.*
+# People sometimes use a tfvars file to hold project names and stuff, no need to commit if it was there
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log

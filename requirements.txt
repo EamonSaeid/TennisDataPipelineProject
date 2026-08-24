@@ -1,0 +1,12 @@
+# Warehouse and transformation
+dbt-core~=1.9
+dbt-bigquery~=1.9
+google-cloud-storage~=2.18
+google-cloud-bigquery~=3.25 
+requests~=2.32
+python-dotenv~=1.0
+ruff~=0.6
+pytest~=8.3
+sqlfluff~=3.2
+sqlfluff-templater-dbt~=3.2
+ 
