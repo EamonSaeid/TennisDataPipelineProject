@@ -66,7 +66,8 @@ if last_seen_mtime is None or last_modified>last_seen_mtime:
         "extraction_window":{'from':ingest_date, 'to':ingest_date},
         "row_count":csv_row_count,
         'source_version':last_modified,
-        'ingested_at':ingest_datetime.isoformat()
+        'ingested_at':ingest_datetime.isoformat(),
+        'batch_id':batch_id
     }
 
     # Uploading the csv onto the GCP bucket
