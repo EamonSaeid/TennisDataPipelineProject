@@ -43,3 +43,9 @@ resource "google_bigquery_dataset" "raw" {
     location="us-west1"
     description="Raw layers - All strings, append only, loaded from gcs landing zone"
 }
+
+resource "google_bigquery_dataset" "staging" {
+    dataset_id="tml_staging"
+    location="us-west1"
+    description="Staging layers - For my dbt modelling"
+}
