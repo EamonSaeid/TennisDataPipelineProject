@@ -1,0 +1,15 @@
+
+version: 2
+
+
+models:
+  - name: stg_tml__matches
+    description: >
+      One row per (tourney, match_num) per batch
+    columns:
+      - name: match_sk
+        description: Surrogate key, hash of tourney_id and match_num
+        data_tests:
+          - unique
+          - not_null
+    
