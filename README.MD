@@ -20,4 +20,7 @@ Started this a bit late (At the start of dbt)
 
 Defining new staging dataset in terraform main.tf rather than letting dbt make it - The project should stand on its own and terraform is basically the contract for provisioning resources. It's cleaner that all the instructions live there
 
-int_matches__by_player - Does that go in staging or intermediate. Theretically its more of an itnermediate stage, but it violates the spec as defined earlier
+int_matches__by_player - Does that go in staging or intermediate? 
+Theretically its more of an intermediate stage, I believe it satisfies a part of "assemeble history" even though it only uses one source.
+Also I will want to resolve things between the tml data source and the API, and then I would need to propagate that through all the tables that use matches. Makes sense then for the shape change to occur further downstream
+

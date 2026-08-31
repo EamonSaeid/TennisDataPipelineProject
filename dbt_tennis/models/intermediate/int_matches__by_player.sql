@@ -4,6 +4,7 @@ SELECT * FROM `tennisdataengproject.tml_staging.stg_tml__matches`
 
 winners as (
   SELECT
+    to_hex(md5(concat(match_sk,"|", winner_id))) match_player_sk,
     match_sk,
     tourney_id,
     tourney_name,
@@ -13,13 +14,17 @@ winners as (
     winner_rank player_rank,
     tourney_round,
     minutes,
+    true as won
     
   FROM
     MATCHES
+  WHERE
+    winner_id is not null
 ),
 
 losers as (
   SELECT
+    to_hex(md5(concat(match_sk,"|", loser_id))) match_player_sk,
     match_sk,
     tourney_id,
     tourney_name,
@@ -29,9 +34,12 @@ losers as (
     loser_rank player_rank,
     tourney_round,
     minutes,
+    false as won,
     
   FROM
     MATCHES
+  WHERE
+    loser_id is not null
 )
 
 

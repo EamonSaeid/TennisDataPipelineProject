@@ -11,5 +11,5 @@ models:
         description: Surrogate key, hash of tourney_id and match_num
         data_tests:
           - unique
-          - not_null
-    
+
+

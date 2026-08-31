@@ -1,0 +1,16 @@
+
+version: 2
+
+
+models:
+  - name: int_matches__by_player
+    description: >
+      One row per player per match - To allow sensible aggregation/reportign without having to evaluate multiple columns
+    columns:
+      - name: match_player_sk
+        description: Surrogate key, hash of match_sk and player_id
+        data_tests:
+          - unique
+          - not_null
+
+    
