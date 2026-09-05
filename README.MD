@@ -1,7 +1,8 @@
+# Tennis Data Pipeline Project
 Buidling a bitemporal data warehouse using ATP tennis match data, with a view towards learning professional data engineering techniques and technologies (terraform/DBT/Airflow/GCS/BigQuery)
 
 
-Architecture overview:
+# Architecture overview:
 
 ![alt text](image.png)
 
@@ -14,13 +15,13 @@ Architecture overview:
 | Modelling & testing | dbt          | staging → intermediate → marts. Models available under /dbt_tennis/ |
 | Orchestration       | Airflow      | *planned — not yet built*                                           |
 
-Infrastructure is provisiong using Terraform
+Infrastructure is provisioned using Terraform
 
 
 
 
 
-Decision log:
+# Decision log
 
 | Category                 | Decision made                                                                                                                                                 | Justification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
