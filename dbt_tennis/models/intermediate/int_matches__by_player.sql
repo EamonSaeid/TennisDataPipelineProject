@@ -19,7 +19,8 @@ winners as (
   FROM
     MATCHES
   WHERE
-    winner_id is not null
+    match_sk is not null and winner_id is not null
+    AND has_plausible_player_ids=true
 ),
 
 losers as (
@@ -39,7 +40,8 @@ losers as (
   FROM
     MATCHES
   WHERE
-    loser_id is not null
+    match_sk is not null and loser_id is not null
+    AND has_plausible_player_ids=true
 )
 
 

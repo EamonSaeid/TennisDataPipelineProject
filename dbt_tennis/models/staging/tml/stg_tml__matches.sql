@@ -58,6 +58,7 @@ SELECT
   safe_cast(l_SvGms as integer) as l_SvGms,
   safe_cast(l_bpSaved as integer) as l_bpSaved,
   safe_cast(l_bpFaced as integer) as l_bpFaced,
+  NOT(winner_id is not null and loser_id is not null and winner_id=loser_id) has_plausible_player_ids,
   _batch_id as batch_id,
   _ingested_at as ingested_at	
 FROM

@@ -11,5 +11,17 @@ models:
         description: Surrogate key, hash of tourney_id and match_num
         data_tests:
           - unique
+          - not_null:
+              config:
+                severity: warn
+      - name: has_plausible_player_ids
+        description: TRUE if both winnner and loser ID are not null and are different
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [true]
+                quote: false
+              config:
+                severity: warn
 
 
