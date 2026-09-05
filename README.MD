@@ -6,13 +6,13 @@ Architecture overview:
 ![alt text](image.png)
 
 
-| Stage | Tool | What it does |
-|---|---|---|
-| Extraction | `landing.py` | Pulls files from source, writes each to GCS with a manifest |
-| Storage | GCS | Landing zone — per-file, immutable |
-| Loading | `load.py` | Loads new batches into BigQuery raw, reconciling schema drift |
-| Modelling & testing | dbt | staging → intermediate → marts |
-| Orchestration | Airflow | *planned — not yet built* |
+| Stage               | Tool         | What it does                                                        |
+| ------------------- | ------------ | ------------------------------------------------------------------- |
+| Extraction          | `landing.py` | Pulls files from source, writes each to GCS with a manifest         |
+| Storage             | GCS          | Landing zone — per-file, immutable                                  |
+| Loading             | `load.py`    | Loads new batches into BigQuery raw, reconciling schema drift       |
+| Modelling & testing | dbt          | staging → intermediate → marts. Models available under /dbt_tennis/ |
+| Orchestration       | Airflow      | *planned — not yet built*                                           |
 
 Infrastructure is provisiong using Terraform
 
@@ -31,12 +31,21 @@ Step 3: Modelling that data with GCP to have sensible types
 
 Decision log:
 
+Category	|	Decision made	|	Justification
+Modelling	|	matches_by__player is an intermediate table	|	This table assembles the history in a way that is sensible for easily building analytics views, and doesn't involve any joining between sources. It must inherit any fixes that occur upstream when the API data is available for reconciliation.
+Modelling	|	Matches without a valid player_id are removed, even if the player_name column is available	|	If there isn't a player ID the row lacks referential integrity, therefore there's technically nothing to be able to count. The name could be used to reconcile what the ID should be, but that fix needs to be completed further upstream.
+Modelling	|	Matches without a match_num are to be excluded from int_matches__by_player	|	This error surfaced as more historical data was added, but some rows are missing a match_num identifier, and therefore have a null match_sk and subsequently a null match_player_sk. This again violates the referencial integrity of the rows, and the table is matches by player, so both matches and player must be referable.
+Loading	|	When ingesting multiple batches, the full process of inserting the data will be followed per batch rather than attempting to update all the batches in one go	|	Theoertically there is a pseudo colum _file_name in bigquery external tables, so theoretically I could stack staging up with all the data and bodge on the ingested and and batch_id from that, to then reduce the number of read/writes that occur. However this would make accounting for schema drift more complex, and for this dataset we would rarely expect there to be large volumes of batches with changes (most likely just the most recent year's csv) and so the added  complexity offers little benefit.
+Loading	|	The raw table will add new columns as new columns are noted in  the source data	|	Some of the older files caused errors as they don't have the "indoor" column, dynamically adding new columns involves a cheap "alter" statement that reports null for already existing rows and includes the data for the batch with the new column name. This solution means the script is resilient to schema drift, which we can't guarantee won't happen. The arrival of a new column should be warned in DBT and decisions can be made at that point how to best handle the incoming data/columns, without the pipeline failing.
+
 
 Defining new staging dataset in terraform main.tf rather than letting dbt make it
 The project should stand on its own and terraform is basically the contract for provisioning resources. 
 It's cleaner that all the instructions live there
 
-int_matches__by_player - Does that go in staging or intermediate?  b 
+
+
+int_matches__by_player - Does that go in staging or intermediate?
 Theretically its more of an intermediate stage, I believe it satisfies a part of "assemeble history" even though it only uses one source.
 Also I will want to resolve things between the tml data source and the API, and then I would need to propagate that through all the tables that use matches. Makes sense then for the shape change to occur further downstream
 
