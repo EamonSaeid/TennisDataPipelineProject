@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 520" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="dots" width="36" height="36" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#e2e2e2"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1560" height="520" fill="#fafafa"/>
+  <rect x="0" y="0" width="1560" height="520" fill="url(#dots)"/>
+
+  <!-- Title -->
+  <text x="780" y="36" text-anchor="middle" font-size="24" font-weight="700" fill="#1a1a1a">ATP Tennis Data Warehouse — Pipeline Architecture</text>
+  <text x="780" y="60" text-anchor="middle" font-size="14" fill="#666">Landing → Raw → dbt (tiered tests) → Marts, with a manifest per file for replay &amp; idempotent loads</text>
+
+  <!-- Manifest callout -->
+  <rect x="385" y="106" width="190" height="96" rx="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="480" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#7a5b00">manifest.json (per file)</text>
+  <text x="480" y="151" text-anchor="middle" font-size="12" fill="#7a5b00">row_count · batch_id</text>
+  <text x="480" y="170" text-anchor="middle" font-size="12" fill="#7a5b00">source_version · ingested_at</text>
+  <text x="480" y="191" text-anchor="middle" font-size="11" font-style="italic" fill="#95751f">→ reloads provable &amp; replayable</text>
+  <line x1="480" y1="202" x2="460" y2="230" stroke="#F9AB00" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- load.py callout -->
+  <rect x="598" y="106" width="235" height="96" rx="10" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="715" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#1a4fa0">load.py</text>
+  <text x="715" y="151" text-anchor="middle" font-size="12" fill="#1a4fa0">loads each new batch</text>
+  <text x="715" y="170" text-anchor="middle" font-size="12" fill="#1a4fa0">new columns → cheap ALTER</text>
+  <text x="715" y="191" text-anchor="middle" font-size="11" font-style="italic" fill="#3f6bb8">→ old rows just report NULL, nothing rewritten</text>
+  <line x1="715" y1="202" x2="700" y2="230" stroke="#4285F4" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- dbt model design callout (staging | intermediate) -->
+  <rect x="845" y="100" width="320" height="98" rx="10" fill="#FFEDE9" stroke="#FF694A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="1005" y1="114" x2="1005" y2="184" stroke="#FF694A" stroke-width="1" stroke-dasharray="2 2"/>
+
+  <text x="925" y="122" text-anchor="middle" font-size="12" font-weight="700" fill="#a3320f">staging</text>
+  <text x="925" y="140" text-anchor="middle" font-size="10.5" fill="#a3320f">lossless, 1 row per</text>
+  <text x="925" y="154" text-anchor="middle" font-size="10.5" fill="#a3320f">match per batch</text>
+  <text x="925" y="171" text-anchor="middle" font-size="10" font-style="italic" fill="#c1502b">known issues flagged</text>
+  <text x="925" y="184" text-anchor="middle" font-size="10" font-style="italic" fill="#c1502b">via tests, not dropped</text>
+
+  <text x="1085" y="122" text-anchor="middle" font-size="12" font-weight="700" fill="#a3320f">intermediate</text>
+  <text x="1085" y="140" text-anchor="middle" font-size="10.5" fill="#a3320f">matches-by-player</text>
+  <text x="1085" y="154" text-anchor="middle" font-size="10.5" fill="#a3320f">model</text>
+  <text x="1085" y="171" text-anchor="middle" font-size="10" font-style="italic" fill="#c1502b">easy-to-consume</text>
+  <text x="1085" y="184" text-anchor="middle" font-size="10" font-style="italic" fill="#c1502b">analytics view</text>
+
+  <line x1="1005" y1="198" x2="1030" y2="230" stroke="#FF694A" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- Source boxes -->
+  <rect x="40" y="200" width="220" height="90" rx="10" fill="#ffffff" stroke="#333" stroke-width="1.5"/>
+  <g transform="translate(70,245)">
+    <path d="M -12 -10 L -12 10 A 12 4 0 0 0 12 10 L 12 -10" fill="white" stroke="#333" stroke-width="1.5"/>
+    <ellipse cx="0" cy="-10" rx="12" ry="4" fill="white" stroke="#333" stroke-width="1.5"/>
+  </g>
+  <text x="105" y="240" font-size="15" font-weight="700" fill="#1a1a1a">Live Tennis API</text>
+  <text x="105" y="260" font-size="11" font-style="italic" fill="#777">(future: live source)</text>
+
+  <rect x="40" y="320" width="220" height="90" rx="10" fill="#ffffff" stroke="#333" stroke-width="1.5"/>
+  <g transform="translate(70,365)">
+    <path d="M -12 -10 L -12 10 A 12 4 0 0 0 12 10 L 12 -10" fill="white" stroke="#333" stroke-width="1.5"/>
+    <ellipse cx="0" cy="-10" rx="12" ry="4" fill="white" stroke="#333" stroke-width="1.5"/>
+  </g>
+  <text x="105" y="360" font-size="15" font-weight="700" fill="#1a1a1a">TML Matches</text>
+  <text x="105" y="380" font-size="11" font-style="italic" fill="#777">CSV archive (historical)</text>
+
+  <!-- Merge lines into landing -->
+  <line x1="260" y1="245" x2="300" y2="305" stroke="#555" stroke-width="1.5"/>
+  <line x1="260" y1="365" x2="300" y2="305" stroke="#555" stroke-width="1.5"/>
+  <circle cx="300" cy="305" r="3" fill="#444"/>
+  <line x1="300" y1="305" x2="378" y2="305" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="342" y="292" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" font-style="italic" fill="#666">landing.py</text>
+
+  <!-- Landing icon box (GCS) -->
+  <rect x="385" y="230" width="150" height="150" rx="22" fill="#4285F4" stroke="rgba(0,0,0,0.15)"/>
+  <g transform="translate(460,300)">
+    <circle cx="-20" cy="8" r="18" fill="white"/>
+    <circle cx="8" cy="-10" r="24" fill="white"/>
+    <circle cx="32" cy="8" r="16" fill="white"/>
+    <rect x="-33" y="8" width="80" height="24" rx="12" fill="white"/>
+  </g>
+
+  <!-- Landing -> Raw arrow -->
+  <line x1="540" y1="305" x2="688" y2="305" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="615" y="292" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" font-style="italic" fill="#666">load.py</text>
+
+  <!-- Raw icon box (BigQuery raw) -->
+  <rect x="695" y="230" width="150" height="150" rx="22" fill="#673AB7" stroke="rgba(0,0,0,0.15)"/>
+  <g transform="translate(770,315)">
+    <rect x="-30" y="-25" width="16" height="25" fill="white"/>
+    <rect x="-8" y="-40" width="16" height="40" fill="white"/>
+    <rect x="14" y="-55" width="16" height="55" fill="white"/>
+  </g>
+
+  <!-- Raw -> dbt arrow -->
+  <line x1="850" y1="305" x2="998" y2="305" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="925" y="292" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" font-style="italic" fill="#666">dbt build</text>
+
+  <!-- dbt icon box -->
+  <rect x="1005" y="230" width="150" height="150" rx="22" fill="#FF694A" stroke="rgba(0,0,0,0.15)"/>
+  <g transform="translate(1080,300)">
+    <path d="M -35 -30 L 35 -30 L 10 10 L 10 35 L -10 35 L -10 10 Z" fill="white"/>
+  </g>
+
+  <!-- dbt -> marts arrow -->
+  <line x1="1160" y1="305" x2="1308" y2="305" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1235" y="292" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" font-style="italic" fill="#666">select + test</text>
+
+  <!-- Marts icon box -->
+  <rect x="1315" y="230" width="150" height="150" rx="22" fill="#0F9D58" stroke="rgba(0,0,0,0.15)"/>
+  <g transform="translate(1390,305)" stroke="white" stroke-width="4" fill="none">
+    <rect x="-30" y="-25" width="60" height="50" rx="4"/>
+    <line x1="-30" y1="-8" x2="30" y2="-8"/>
+    <line x1="-30" y1="9" x2="30" y2="9"/>
+    <line x1="-10" y1="-25" x2="-10" y2="25"/>
+    <line x1="10" y1="-25" x2="10" y2="25"/>
+  </g>
+
+  <!-- Label plates -->
+  <rect x="365" y="365" width="190" height="76" rx="12" fill="white" stroke="#333" stroke-width="1.5"/>
+  <text x="460" y="388" text-anchor="middle" font-size="15" font-weight="700" fill="#1a1a1a">Google Cloud Storage</text>
+  <text x="460" y="408" text-anchor="middle" font-size="12" fill="#666">Landing zone</text>
+  <text x="460" y="426" text-anchor="middle" font-size="11" font-style="italic" fill="#888">(per file, immutable)</text>
+
+  <rect x="675" y="365" width="190" height="76" rx="12" fill="white" stroke="#333" stroke-width="1.5"/>
+  <text x="770" y="388" text-anchor="middle" font-size="15" font-weight="700" fill="#1a1a1a">BigQuery — Raw</text>
+  <text x="770" y="408" text-anchor="middle" font-size="12" fill="#666">all STRING columns</text>
+  <text x="770" y="426" text-anchor="middle" font-size="11" font-style="italic" fill="#888">(schema auto-reconciled)</text>
+
+  <rect x="985" y="365" width="190" height="76" rx="12" fill="white" stroke="#333" stroke-width="1.5"/>
+  <text x="1080" y="388" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">dbt</text>
+  <text x="1080" y="408" text-anchor="middle" font-size="11" fill="#666">staging → int → marts</text>
+  <text x="1080" y="426" text-anchor="middle" font-size="10" font-style="italic" fill="#888">tests: warn (gaps) → error (bad rows)</text>
+
+  <rect x="1295" y="365" width="190" height="76" rx="12" fill="white" stroke="#333" stroke-width="1.5"/>
+  <text x="1390" y="388" text-anchor="middle" font-size="15" font-weight="700" fill="#1a1a1a">BigQuery — Marts</text>
+  <text x="1390" y="408" text-anchor="middle" font-size="12" fill="#666">analytics-ready</text>
+  <text x="1390" y="426" text-anchor="middle" font-size="11" font-style="italic" fill="#888">(modeled, tested)</text>
+
+  <!-- Legend -->
+  <rect x="500" y="470" width="14" height="14" fill="#4285F4"/>
+  <text x="520" y="482" font-size="12" fill="#444">GCP storage / compute</text>
+  <rect x="740" y="470" width="14" height="14" fill="#FF694A"/>
+  <text x="760" y="482" font-size="12" fill="#444">dbt transform</text>
+  <rect x="920" y="470" width="14" height="14" fill="#0F9D58"/>
+  <text x="940" y="482" font-size="12" fill="#444">analytics-ready marts</text>
+</svg>

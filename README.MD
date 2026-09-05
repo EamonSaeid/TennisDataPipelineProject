@@ -1,4 +1,20 @@
-Buidling a data pipeline to ingest tennis match data from the TML data source and a tennis match data API. 
+Buidling a bitemporal data warehouse using ATP tennis match data, with a view towards learning professional data engineering techniques and technologies (terraform/DBT/Airflow/GCS/BigQuery)
+
+
+Architecture overview:
+
+![alt text](image.png)
+
+
+| Stage | Tool | What it does |
+|---|---|---|
+| Extraction | `landing.py` | Pulls files from source, writes each to GCS with a manifest |
+| Storage | GCS | Landing zone — per-file, immutable |
+| Loading | `load.py` | Loads new batches into BigQuery raw, reconciling schema drift |
+| Modelling & testing | dbt | staging → intermediate → marts |
+| Orchestration | Airflow | *planned — not yet built* |
+
+Infrastructure is provisiong using Terraform
 
 Why?
 * The TML data has a full history with some retrospective fixes
@@ -13,16 +29,14 @@ Step 3: Modelling that data with GCP to have sensible types
 
 
 
-
 Decision log:
 
-Started this a bit late (At the start of dbt)
 
 Defining new staging dataset in terraform main.tf rather than letting dbt make it
 The project should stand on its own and terraform is basically the contract for provisioning resources. 
 It's cleaner that all the instructions live there
 
-int_matches__by_player - Does that go in staging or intermediate? 
+int_matches__by_player - Does that go in staging or intermediate?  b 
 Theretically its more of an intermediate stage, I believe it satisfies a part of "assemeble history" even though it only uses one source.
 Also I will want to resolve things between the tml data source and the API, and then I would need to propagate that through all the tables that use matches. Makes sense then for the shape change to occur further downstream
 

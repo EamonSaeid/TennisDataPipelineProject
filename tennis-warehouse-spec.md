@@ -1,5 +1,7 @@
 # ATP Bitemporal Match Warehouse — Project Spec
 
+N.B. This is an AI generated document, defining the spec of things I should be aiming to achieve as part of this project. Note I will stay as close to this spec as possible, but I will always endeavour to make the strongest justified engineering decision which may come to light when building the project.
+
 **Status:** Draft v0.1
 **Owner:** Eamon
 **Last updated:** 2026-08-22
