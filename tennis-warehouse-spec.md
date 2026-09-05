@@ -12,9 +12,7 @@ N.B. This is an AI generated document, defining the spec of things I should be a
 
 ### 1.1 The actual goal
 
-Move from Senior Insight Analyst to Data Engineer. This project is **not** the primary
-evidence for that move. This project exists to
-close two specific gaps:
+This project exists to close two specific gaps I don't get to touch day-to-day:
 
 1. **Tooling I don't touch at work.** Orchestration (Airflow), infrastructure-as-code
    (Terraform), CI for data, and API ingestion with real constraints.
