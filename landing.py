@@ -28,13 +28,13 @@ files=[i for i in r.json()['files'] if re.fullmatch(r'\d{4}\.csv',i['name'])]
 # Variables needed in ingestion
 ingest_datetime=datetime.now()
 ingest_date=ingest_datetime.strftime("%Y-%m-%d")
-batch_id=str(uuid.uuid4())
 
 # First checking GCP to see when the last download was done/if there is a latest mtime
 blobs=bucket.list_blobs(prefix='raw/tml/matches')
 manifest_blobs=[i for i in blobs if i.name.endswith("_manifest.json")]
 
 for file in files:
+    batch_id=str(uuid.uuid4())
     last_modified=file['mtime']
     csv_url=file['url']
     file_name=file['name']
@@ -46,11 +46,9 @@ for file in files:
         last_seen_mtime=None
     else:
         latest=max(file_manifest_blobs, key=lambda x: x.time_created)
-
         # Learning point - When I expanded this code from pulling a single file, to then pulling all the files one after the other, I hit a failure
         # type called "time of check to time of use". I went into the console and delted some of the previous runs, so the blob had been edited wehn I came to it
         # Generally this error won't be enountered but getting the latest_live version protects againts this sort of error, so why not
-        # The fix is to use the manifest_blobs list to determine the 
         latest_live=bucket.blob(latest.name)
         last_seen_mtime=json.loads(latest_live.download_as_text())['source_version']
 
